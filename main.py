@@ -34,7 +34,7 @@ def get_vehicle_stats(plate: str) -> None:
 
 
 
-get_vehicle_stats('SC06LMM')
+get_vehicle_stats('')
 
 
 
