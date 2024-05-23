@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from remap_info import get_remap_info
 
 
-def get_remap_potential(plate):
+def get_remap_potential(plate) -> None:
     """
        :param plate: Entering license plate to get information about.
        :return: None
