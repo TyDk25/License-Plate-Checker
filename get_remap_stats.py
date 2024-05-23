@@ -1,7 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
-from vehicle_stats import get_remap_info
+from remap_info import get_remap_info
+
+
 def get_remap_potential(plate):
+    """
+       :param plate: Entering license plate to get information about.
+       :return: None
+       """
     page = requests.get('https://totalcarcheck.co.uk/FreeCheck?regno=' + plate)
     soup = BeautifulSoup(page.content, 'html.parser')
     remap = get_remap_info(plate)

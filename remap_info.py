@@ -7,6 +7,10 @@ from bs4 import BeautifulSoup
 
 
 def get_remap_info(plate: str) -> str:
+    """
+    :param plate: Entering plate to get remap information about
+    :return str: Remapped BHP.
+    """
     # Install chromedriver
     chromedriver_autoinstaller.install()
 
