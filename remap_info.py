@@ -4,34 +4,50 @@ import chromedriver_autoinstaller
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-# Install chromedriver
-chromedriver_autoinstaller.install()
 
-# Set up Chrome options
-options = webdriver.ChromeOptions()
 
-options.add_experimental_option("detach", True)
+def get_remap_info(plate: str) -> str:
+    # Install chromedriver
+    chromedriver_autoinstaller.install()
 
-# Initialize the Chrome driver
-driver = webdriver.Chrome(options=options)
+    # Set up Chrome options
+    options = webdriver.ChromeOptions()
+    options.add_argument("--headless=new")
 
-# Navigate to the website
-driver.get(r'https://www.celtictuning.co.uk/')
+    # Initialize the Chrome driver
+    driver = webdriver.Chrome(options=options)
 
-license_plate_enter = driver.find_element(By.CLASS_NAME, 'mod_ctvc-dvlaCheck')
-license_plate_enter.send_keys('Sc06LMM')
+    # Navigate to the website
+    driver.get(r'https://www.celtictuning.co.uk/')
 
-get_remap_info = driver.find_element(By.ID, 'mod_ctvc-dvla-search-submit')
-get_remap_info.click()
+    license_plate_enter = driver.find_element(By.CLASS_NAME, 'mod_ctvc-dvlaCheck')
+    license_plate_enter.send_keys(plate)
 
-WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctvc-title")))
+    get_remap_info = driver.find_element(By.ID, 'mod_ctvc-dvla-search-submit')
+    get_remap_info.click()
 
-current_url = driver.current_url
-print(f"Current URL: {current_url}")
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "ctvc-title")))
 
-# Get the page source after the elements are loaded
-page_source = driver.page_source
+    page_source = driver.page_source
 
-soup = BeautifulSoup(page_source, 'html.parser')
+    soup = BeautifulSoup(page_source, 'html.parser')
 
-bhp_div = soup.find_all('div', class_='ctvc_gauge_text')
+    bhp_div = soup.find_all('div', class_='ctvc_gauge_text')
+
+    bhp_values = [
+        div.find('h5').text.strip()
+        for div in bhp_div
+        if div.find('h5') is not None
+    ]
+
+    counter = 0
+    for bhp in bhp_values:
+        if counter == 1:
+            remap = bhp
+            break
+        counter += 1
+
+    return remap
+
+
+
